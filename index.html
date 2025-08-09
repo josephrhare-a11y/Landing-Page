@@ -201,11 +201,11 @@
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     userId = user.uid;
-                    console.log('Firebase user authenticated:', userId);
+                    console.log('Firebase user authenticated successfully.');
                     // Start listening for bookings after auth is ready
                     listenForBookings();
                 } else {
-                    console.log('Firebase user not authenticated, signing in anonymously.');
+                    console.log('Firebase user not authenticated, attempting anonymous sign-in.');
                     try {
                         if (initialAuthToken) {
                             await signInWithCustomToken(auth, initialAuthToken);
@@ -214,6 +214,7 @@
                         }
                     } catch (error) {
                         console.error("Firebase sign-in failed:", error);
+                        showModal('Authentication Error', 'Could not connect to Firebase. Please check the console for details.');
                     }
                 }
             });
@@ -346,7 +347,13 @@
              * Sets up a real-time listener for the bookings collection.
              */
             function listenForBookings() {
+                if (!userId) {
+                    console.warn("User is not authenticated yet. Cannot listen for bookings.");
+                    return;
+                }
+                
                 const bookingsCollectionRef = collection(db, `artifacts/${appId}/public/data/bookings`);
+                console.log(`Listening for bookings at path: ${bookingsCollectionRef.path}`);
                 
                 onSnapshot(bookingsCollectionRef, (querySnapshot) => {
                     bookedDates = [];
@@ -375,14 +382,21 @@
                      showModal('Booking Error', 'This date is already booked. Please choose another one.');
                      return;
                 }
+
+                if (!userId) {
+                    showModal('Authentication Error', 'Please wait for Firebase to connect before booking.');
+                    console.error("Attempted to submit form before Firebase authentication was complete.");
+                    return;
+                }
                 
                 try {
-                    // Add the new booking to Firestore
-                    await addDoc(collection(db, `artifacts/${appId}/public/data/bookings`), {
+                    const bookingsCollectionRef = collection(db, `artifacts/${appId}/public/data/bookings`);
+                    const newBooking = {
                         email: email,
                         date: selectedDate,
                         timestamp: new Date()
-                    });
+                    };
+                    await addDoc(bookingsCollectionRef, newBooking);
                     
                     showModal('Mission Confirmed!', 'Your booking has been received. We\'ve sent a confirmation email with further instructions.');
                     
@@ -395,7 +409,7 @@
 
                 } catch (e) {
                     console.error("Error adding document: ", e);
-                    showModal('Submission Failed', 'Something went wrong while trying to book your mission. Please try again.');
+                    showModal('Submission Failed', `Something went wrong while trying to book your mission. Please check the console for errors and try again.`);
                 }
             });
         });
