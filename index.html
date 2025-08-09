@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Outbreak Escape Room</title>
+    <!-- Load Inter font from Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+    <!-- Load Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0d0d;
+        }
+        .container-bg {
+            background: rgba(25, 25, 25, 0.8);
+        }
+        .text-neon-green {
+            color: #39FF14;
+            text-shadow: 0 0 5px #39FF14, 0 0 10px #39FF14;
+        }
+        .text-neon-red {
+            color: #ff3131;
+            text-shadow: 0 0 5px #ff3131, 0 0 10px #ff3131;
+        }
+        .btn-neon {
+            background-color: #39FF14;
+            color: #000;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+        }
+        .btn-neon:hover {
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.8), 0 0 30px rgba(57, 255, 20, 0.6);
+            transform: translateY(-2px);
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .calendar-day {
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .calendar-day:hover:not(.day-header):not(.disabled) {
+            background-color: #2a2a2a;
+        }
+        .calendar-day.selected {
+            background-color: #39FF14 !important;
+            color: #000;
+            font-weight: 600;
+        }
+        .day-header {
+            font-weight: bold;
+            color: #999;
+        }
+        .disabled {
+            color: #555;
+            cursor: not-allowed;
+        }
+        .fade-out {
+            animation: fadeOut 2s forwards;
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; display: none; }
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen flex items-center justify-center p-4">
+
+    <!-- Main Container -->
+    <div class="max-w-4xl w-full container-bg rounded-lg shadow-2xl p-8 md:p-12 border border-gray-700">
+
+        <!-- Title and Introduction -->
+        <div class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-neon-green uppercase tracking-wide mb-2">Operation: Blackout</h1>
+            <p class="text-gray-400 text-lg">A viral outbreak has hit the city. Your mission is to find the cure. The clock is ticking...</p>
+        </div>
+
+        <!-- Video Briefing Section -->
+        <div id="video-section" class="mb-10">
+            <h2 class="text-3xl font-semibold mb-4 text-center text-neon-red">Mandatory Briefing Video</h2>
+            <div id="video-container" class="relative bg-black rounded-lg overflow-hidden shadow-xl border-4 border-red-800">
+                <!-- Replace 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4' with your actual video URL -->
+                <video id="briefing-video" class="w-full h-auto" poster="https://placehold.co/1280x720/000/ff3131?text=VIRAL+OUTBREAK+PROTOCOL+-+LOADING..." controls>
+                    <source src="https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <!-- Play button overlay -->
+                <div id="play-overlay" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75 transition-opacity duration-300">
+                    <button id="play-button" class="btn-neon text-lg md:text-xl font-bold py-3 px-8 rounded-full focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50">
+                        ACCESS BRIEFING
+                    </button>
+                </div>
+            </div>
+            <p id="video-narrative" class="mt-4 text-gray-400 text-sm italic hidden">
+                // Video script goes here. This text will be shown after the video completes.
+                <br>
+                **VIRAL OUTBREAK IN PROGRESS.**
+                <br>
+                Welcome, operatives. The 'Z-Strain' has been released. The city is under quarantine. We have a limited window of 60 minutes to find the antidote, which is hidden in a secure lab. You are our last hope. Fail, and the city falls. Good luck.
+            </p>
+        </div>
+
+        <!-- --- -->
+
+        <!-- Sign-Up Section -->
+        <div class="text-center">
+            <h2 class="text-3xl font-semibold text-neon-green mb-6">Secure Your Mission Date</h2>
+            <p class="text-gray-400 mb-6">Select a date and enter your contact details to reserve your slot. The fate of the city is in your hands.</p>
+            
+            <form id="signup-form" class="space-y-6">
+                <!-- Email Input -->
+                <div>
+                    <label for="email" class="block text-left text-sm font-medium text-gray-300 mb-2">Email Address</label>
+                    <input type="email" id="email" name="email" required class="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 focus:border-neon-green focus:ring focus:ring-neon-green focus:ring-opacity-50 transition-colors">
+                </div>
+
+                <!-- Calendar -->
+                <div>
+                    <h3 class="text-xl font-medium text-gray-300 mb-4">Choose a Date</h3>
+                    <div id="calendar" class="bg-gray-800 p-4 rounded-lg shadow-lg">
+                        <!-- Calendar will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div id="submit-section">
+                    <button type="submit" class="btn-neon w-full py-4 rounded-lg text-xl font-bold uppercase tracking-wider focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50">
+                        Reserve Your Slot
+                    </button>
+                </div>
+
+                <!-- Confirmation message box -->
+                <div id="message-box" class="hidden bg-green-900 bg-opacity-50 text-green-300 p-4 rounded-lg text-left border border-green-500 mt-4">
+                    <p class="font-bold">Mission Confirmed!</p>
+                    <p>Your booking has been received. We've sent a confirmation email with further instructions.</p>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Video Player Logic ---
+            const video = document.getElementById('briefing-video');
+            const playButton = document.getElementById('play-button');
+            const playOverlay = document.getElementById('play-overlay');
+            const videoNarrative = document.getElementById('video-narrative');
+
+            playButton.addEventListener('click', () => {
+                video.play();
+                playOverlay.classList.add('fade-out');
+            });
+
+            video.addEventListener('ended', () => {
+                playOverlay.style.display = 'none'; // Ensure it's fully gone
+                videoNarrative.classList.remove('hidden');
+                videoNarrative.classList.add('text-neon-red'); // Highlight the mission text
+            });
+
+            // --- Calendar and Sign-up Form Logic ---
+            const calendarEl = document.getElementById('calendar');
+            const signupForm = document.getElementById('signup-form');
+            const messageBox = document.getElementById('message-box');
+            let selectedDate = null;
+
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+
+            /**
+             * Renders the calendar for a given month and year.
+             * @param {number} month The month (0-11).
+             * @param {number} year The year.
+             */
+            function renderCalendar(month, year) {
+                calendarEl.innerHTML = ''; // Clear previous calendar
+
+                const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+                // Calendar header
+                const header = document.createElement('div');
+                header.className = 'text-center text-xl font-bold mb-4 text-neon-green';
+                header.textContent = `${monthNames[month]} ${year}`;
+                calendarEl.appendChild(header);
+
+                // Day headers (Sun, Mon, etc.)
+                const dayHeaderGrid = document.createElement('div');
+                dayHeaderGrid.className = 'calendar-grid mb-2';
+                dayNames.forEach(day => {
+                    const dayHeader = document.createElement('div');
+                    dayHeader.className = 'day-header';
+                    dayHeader.textContent = day;
+                    dayHeaderGrid.appendChild(dayHeader);
+                });
+                calendarEl.appendChild(dayHeaderGrid);
+
+                // Days of the month
+                const daysGrid = document.createElement('div');
+                daysGrid.className = 'calendar-grid';
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                // Add empty cells for the start of the month
+                for (let i = 0; i < firstDay; i++) {
+                    daysGrid.appendChild(document.createElement('div'));
+                }
+
+                // Add day cells
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const dayCell = document.createElement('div');
+                    dayCell.className = 'calendar-day bg-gray-700 text-gray-200';
+                    dayCell.textContent = i;
+                    dayCell.dataset.date = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                    
+                    const currentDate = new Date(year, month, i);
+                    // Disable past dates
+                    if (currentDate < today) {
+                         dayCell.classList.add('disabled');
+                    } else {
+                        dayCell.addEventListener('click', () => {
+                            // Clear previous selection
+                            document.querySelectorAll('.calendar-day.selected').forEach(cell => {
+                                cell.classList.remove('selected');
+                            });
+                            // Select current cell
+                            dayCell.classList.add('selected');
+                            selectedDate = dayCell.dataset.date;
+                        });
+                    }
+                    daysGrid.appendChild(dayCell);
+                }
+
+                calendarEl.appendChild(daysGrid);
+            }
+
+            // Initial calendar render
+            renderCalendar(currentMonth, currentYear);
+
+            // Handle form submission
+            signupForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                if (!selectedDate) {
+                    alert('Please select a date.');
+                    return;
+                }
+                
+                // Here you would send the data to a backend server.
+                // For this example, we'll just log it and show a confirmation message.
+                console.log(`New sign-up: Email: ${email}, Date: ${selectedDate}`);
+
+                // Display a confirmation message
+                messageBox.classList.remove('hidden');
+                signupForm.reset();
+                selectedDate = null;
+                document.querySelectorAll('.calendar-day.selected').forEach(cell => {
+                    cell.classList.remove('selected');
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
