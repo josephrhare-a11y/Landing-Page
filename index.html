@@ -12,6 +12,7 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #111827; /* Dark Gray */
+            padding-bottom: 50px; /* Add padding to prevent overlap with bottom ticker */
         }
         .font-orbitron {
             font-family: 'Orbitron', sans-serif;
@@ -44,8 +45,8 @@
 </head>
 <body class="text-gray-200 hero-bg">
 
-    <!-- Alert Ticker -->
-    <div id="alert-ticker" class="fixed top-0 left-0 w-full bg-red-700 text-white py-2.5 z-50 overflow-hidden whitespace-nowrap border-b-2 border-red-500 shadow-lg shadow-red-900/50">
+    <!-- Top Alert Ticker -->
+    <div id="alert-ticker-top" class="fixed top-0 left-0 w-full bg-red-700 text-white py-2.5 z-50 overflow-hidden whitespace-nowrap border-b-2 border-red-500 shadow-lg shadow-red-900/50">
         <div class="ticker-content-wrapper">
             <span class="font-orbitron uppercase font-bold tracking-wider px-8">
                 CDC EMERGENCY ALERT // BELLEROPHON VIRUS PANDEMIC // QUARANTINE ORDER FOR AJAX, ON // LAST UPDATED: 2025-09-19 17:53 EDT
@@ -155,6 +156,18 @@
             <p class="text-gray-500 mt-2">37 Aldonschool Ct, Ajax, Ontario, Canada</p>
         </div>
     </footer>
+
+    <!-- Bottom Stats Ticker -->
+    <div id="alert-ticker-bottom" class="fixed bottom-0 left-0 w-full bg-red-700 text-white py-2.5 z-50 overflow-hidden whitespace-nowrap border-t-2 border-red-500 shadow-lg shadow-red-900/50">
+        <div class="ticker-content-wrapper">
+            <span class="font-orbitron uppercase font-bold tracking-wider px-8">
+                GLOBAL INFECTIONS: 7.8B+ // CONTAINMENT BREACHES: 198 COUNTRIES // MUTATION RATE: 12.4% HOURLY // PROJECTED EXTINCTION: 48 HOURS
+            </span>
+            <span class="font-orbitron uppercase font-bold tracking-wider px-8">
+                GLOBAL INFECTIONS: 7.8B+ // CONTAINMENT BREACHES: 198 COUNTRIES // MUTATION RATE: 12.4% HOURLY // PROJECTED EXTINCTION: 48 HOURS
+            </span>
+        </div>
+    </div>
 
 </body>
 </html>
