@@ -32,9 +32,29 @@
             box-shadow: 0 0 15px rgba(239, 68, 68, 0.7), 0 0 5px rgba(255, 255, 255, 0.5);
             transform: translateY(-2px);
         }
+        .ticker-content-wrapper {
+            display: inline-block;
+            animation: marquee 40s linear infinite;
+        }
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
     </style>
 </head>
 <body class="text-gray-200 hero-bg">
+
+    <!-- Alert Ticker -->
+    <div id="alert-ticker" class="fixed top-0 left-0 w-full bg-red-700 text-white py-2.5 z-50 overflow-hidden whitespace-nowrap border-b-2 border-red-500 shadow-lg shadow-red-900/50">
+        <div class="ticker-content-wrapper">
+            <span class="font-orbitron uppercase font-bold tracking-wider px-8">
+                CDC EMERGENCY ALERT // BELLEROPHON VIRUS PANDEMIC // QUARANTINE ORDER FOR AJAX, ON // LAST UPDATED: 2025-09-19 17:53 EDT
+            </span>
+            <span class="font-orbitron uppercase font-bold tracking-wider px-8">
+                CDC EMERGENCY ALERT // BELLEROPHON VIRUS PANDEMIC // QUARANTINE ORDER FOR AJAX, ON // LAST UPDATED: 2025-09-19 17:53 EDT
+            </span>
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <header class="min-h-screen flex items-center justify-center p-4">
@@ -81,7 +101,7 @@
                     </p>
                     <p class="mt-4 text-lg text-gray-300 leading-relaxed">
                         A fragmented transmission—a ghost of a signal—has led your group of desperate souls to this place: a long-abandoned CDC research facility, sealed from the world since the fall. This is where it all began. This is where they studied Patient Zero. This is where they initiated the 'Chimera Project'—humanity's last, failed attempt to create a cure.                    </p>
-                   </p>
+                   
                     <p class="mt-4 text-lg text-gray-300 leading-relaxed">
                                             The facility was abandoned for a reason, but the secrets locked within its decaying walls are your only hope. You must get inside, uncover the truth behind the project's failure, and find the cure before the virus claims you, too.
                     </p>
@@ -138,18 +158,4 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
